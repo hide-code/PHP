@@ -1,7 +1,9 @@
 <?php
 require_once('config.php');
 
-// PDOクラスのインスタンス化
+//定義済みのPDOクラスをインスタンス化
+//例外が発生する可能性がある処理をtryに書く
+//エラー内容をユーザに伝える
 function connectPdo()
 {
     try {
@@ -11,26 +13,25 @@ function connectPdo()
         exit();
     }
 }
-
-// ①例外時の処理をスローしていないのはなぜか。PDOの処理で例外処理が行われた場合。
-// PDOのサブクラスであり、PDPクラスが発するエラーを表す、PDOExceptionクラスが存在するから。
+// ①PDOの処理で例外処理が行われた場合,例外時の処理をスローしていないのはなぜか。
+// PDOではデフォルトで、PDOのサブクラスであり、PDOで発するエラーを処理する、PDOExceptionクラスが存在するから。
 // PDOExceptionクラスは自身でスローしてはいけないものである。
-// ②PDOExceptionになっているのはなぜか。PDOExceptionクラスがスローされているから。
-// 他の例外処理をcatchしたい場合は、追加でcatch処理を記載する必要がある。
+// ②PDOExceptionになっているのはなぜか。
+// PDOExceptionクラスがスローされているから。他の例外処理をcatchしたい場合は、追加でcatch処理を記載する必要がある。
 
-// 新規作成処理
+
+// 新規作成処理:content内容を受け取り、DBに追加している
 function createTodoData($todoText) {
 
-    $dbh = connectPdo();
+    $dbh = connectPdo();//DBに接続
     $sql = 'INSERT INTO todos (content) VALUES ("' . $todoText . '")';
     $dbh->query($sql);
-    var_dump($dbh);
 }
 //queryメソッドは、SQL文を発行した結果が含まれているPDOStatementクラスのオブジェクトを返してくれます。
 //var_dump($dbh)の値は、object(PDO)#1 (0) { }となっていた。
 
 
-//登録したデータをDBから全件取得する
+//DB上に登録してあるデータを、削除されたものをのぞいて全件取得する
 function getAllRecords()
 {
     $dbh = connectPdo();
@@ -40,7 +41,7 @@ function getAllRecords()
 //fetchAll() で実行結果を全件配列で取得、そしてその結果をreturnしています。
 
 
-//DBのUPDATE処理
+//指定したidとcontentのUPDATE処理：連想配列から更新するidとcontentを引数としている
 function updateTodoData($post)
 {
     $dbh = connectPdo();
@@ -49,7 +50,7 @@ function updateTodoData($post)
 }
 
 
-//指定したidのTODOデータを取得する処理
+//引数で渡されたidのレコードからcontentデータを取得して返す関数。
 function getTodoTextById($id)
 {
     $dbh = connectPdo();
@@ -63,13 +64,10 @@ function getTodoTextById($id)
 //指定したidのレコードのdeleted_atカラムを現在の時間に更新する処理です。
 function deleteTodoData($id)
 {
-    var_dump($id);
     $dbh = connectPdo();
     $now = date('Y-m-d H:i:s');
     /*ここを編集*/
     $sql = 'UPDATE todos SET deleted_at = "' .$now. '" WHERE id = '. $id;
     $dbh->query($sql);
     
-
-
 }

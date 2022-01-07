@@ -7,42 +7,50 @@ function getTodoList()
     return getAllRecords();
 }
 
-
-//TODOのidを渡して呼び出せばそのTODOの内容を返す関数
+//idで指定したレコードから、content内容を返す関数
 function getSelectedTodo($id)
 {
     return getTodoTextById($id);
 }
 
-//新規作成ページからPOSTされたなら、createTodoData関数 を実行（INSERT処理）
-//編集ページからPOSTされたなら、updateTodoData関数を実行（UPDATE処理）
+
+//直前に遷移したページに応じて処理を分岐する関数。
 function savePostedData($post)
 {
-    $path = getRefererPath();
+    $path = getRefererPath();//store.phpに遷移する直前のページのパスを取得する。
     switch ($path) {
         case '/new.php':
-            createTodoData($post['content']);// 連想配列のキーがcontentであるvalueの値が入っている。
+            createTodoData($post['content']);
             break;
         case '/edit.php':
             updateTodoData($post);
             break;
-        case '/index.php': // 追記
-            deleteTodoData($post['id']); // 追記
-            break; // 追記
+        case '/index.php':
+            deleteTodoData($post['id']);
+            break;
         default:
             break;
     }
 }
 
 
-//リクエスト元のURLを文字列で取得しそのパスを返す
+//直前に遷移していたページのパスを返す関数
 function getRefererPath()
 {
-    $urlArray = parse_url($_SERVER['HTTP_REFERER']);//遷移する前のページのURLを取得する。、parse_urlは引数のURLを配列で取得するメソッド
-    
-    // echo '<pre>';
-    // var_dump($urlArray);
-    // echo '</pre>';
-    
+    $urlArray = parse_url($_SERVER['HTTP_REFERER']);//遷移する前のページのURLを取得する＋parse_urlは引数のURLを連想配列で取得するメソッド
     return $urlArray['path'];
 }
+
+// 更新処理の$urlArrayの値
+// array(5) {
+//   ["scheme"]=>
+//   string(4) "http"
+//   ["host"]=>
+//   string(9) "localhost"
+//   ["port"]=>
+//   int(9999)
+//   ["path"]=>
+//   string(9) "/edit.php"
+//   ["query"]=>
+//   string(4) "id=3"
+// }

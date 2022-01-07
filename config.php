@@ -14,7 +14,6 @@ function errorHandler($errNo, $errStr, $errFile, $errLine)
         echo '<b>' . $errTitle . '</b>: ' . $escapedErrStr . ' in <b>' . $escapedErrFile . '</b> on line <b>' . $errLine . '</b>';
         exit;
     }
-
     return false;
 }
 

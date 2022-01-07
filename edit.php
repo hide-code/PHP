@@ -11,6 +11,7 @@ require_once('functions.php');
   
 <!-- array(1) { ["id"]=> string(1) "1" } -->
 <!-- 上記でindexからgetで送られてきた内容 -->
+<!-- idで指定したレコードから、todo内容を返す関数 -->
   <form action="store.php" method="post">
     <input type="hidden" name="id" value="<?= $_GET['id']; ?>">
     <input type="text" name="content" value="<?= getSelectedTodo($_GET['id']); ?>">
